@@ -1,0 +1,128 @@
+<script type="text/html" data-template-name="dynamic-websocket-map">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-pingInterval"><i class="fa fa-heartbeat"></i> Ping interval (ms)</label>
+    <input type="number" id="node-input-pingInterval" placeholder="30000">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-initialConnections"><i class="fa fa-plug"></i> Initial connections (JSON)</label>
+    <input type="text" id="node-input-initialConnections" placeholder='{"myId": {"url": "wss://example", "headers": {}}}'>
+    <p class="form-tips">
+      Optional. Map of <code>websocketId</code> → connection options.<br>
+      Example: <code>{"feed": {"url":"wss://host/ws","headers":{"Authorization":"Basic ..."}}}</code>
+    </p>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-reconnectMin"><i class="fa fa-refresh"></i> Reconnect min (ms)</label>
+    <input type="number" id="node-input-reconnectMin" placeholder="1000">
+  </div>
+  <div class="form-row">
+    <label for="node-input-reconnectMax"><i class="fa fa-refresh"></i> Reconnect max (ms)</label>
+    <input type="number" id="node-input-reconnectMax" placeholder="30000">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-timeoutMs"><i class="fa fa-clock-o"></i> Connect timeout (ms)</label>
+    <input type="number" id="node-input-timeoutMs" placeholder="10000">
+  </div>
+</script>
+
+<script type="text/html" data-help-name="dynamic-websocket-map">
+  <p>
+    A Node-RED node that manages multiple WebSocket connections (ws/wss), keeps them alive with pings, auto-reconnects on drop,
+    supports Basic Auth and custom headers, and routes by <code>websocketId</code>.
+  </p>
+
+  <h3>Inputs</h3>
+  <ul>
+    <li>
+      <strong>Send data to a connection</strong><br>
+      Set the target ID and payload:<br>
+      <pre>msg.websocketId = "my-conn";
+msg.payload    = "hello"; // string | Buffer | object (auto-JSON)</pre>
+    </li>
+
+    <li>
+      <strong>Manage connections</strong> via commands:<br>
+      Set <code>msg.websocketId = "CMD"</code> and provide a command object in <code>msg.payload</code>:<br>
+<pre>{
+  action: "create" | "close" | "delete" | "closeAll" | "list",
+  id: "my-conn",
+
+  // for create:
+  url: "wss://example/socket",
+  protocols: ["jsonrpc"],              // optional subprotocols
+  headers: { "X-Token": "...", "Origin": "https://example" }, // optional headers
+  username: "user",                    // optional (Basic Auth)
+  password: "pass",                    // optional (Basic Auth)
+  bearerToken: "eyJ...",               // optional (sets Authorization: Bearer ...)
+  rejectUnauthorized: true,            // TLS (set false to ignore host cert validation - not recommended)
+  pingInterval: 30000,                 // override default ping
+
+  // Advanced TLS/WebSocket/Proxy options (optional):
+  ca: "-----BEGIN CERTIFICATE-----\\n...\\n-----END CERTIFICATE-----",
+  cert: "...PEM...",                   // client cert (if needed)
+  key:  "...PEM...",                   // client key (if needed)
+  passphrase: "secret",                // key passphrase
+  servername: "example.com",           // SNI override
+  userAgent: "Node-RED WS/1.0",        // sent as User-Agent
+  perMessageDeflate: true,             // enable/disable PMD
+  proxy: "http://user:pass@proxy:8080",// HTTPS proxy URL
+  handshakeTimeout: 15000              // ms (fallback to node setting timeoutMs)
+}</pre>
+      <ul>
+        <li><code>create</code>: opens or replaces connection <code>id</code>.</li>
+        <li><code>close</code>: gracefully closes <code>id</code> (no auto-reconnect).</li>
+        <li><code>delete</code>: closes and removes from the map.</li>
+        <li><code>closeAll</code>: closes all connections.</li>
+        <li><code>list</code>: emits a state summary of all connections.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>Outputs</h3>
+  <ul>
+    <li>Messages from sockets include the source <code>websocketId</code>:
+<pre>{
+  websocketId: "my-conn",
+  topic: "message" | "open" | "close" | "error" | "reconnect",
+  payload: &lt;data&gt;,   // Buffer | string | object (if JSON-parseable)
+  meta: { code?, reason?, tries?, url? }
+}</pre>
+    </li>
+  </ul>
+
+  <h3>Notes</h3>
+  <ul>
+    <li>Objects are JSON-stringified on send; incoming JSON text is parsed to objects.</li>
+    <li>Pings are sent every <code>pingInterval</code> ms (0 disables); some gateways dislike very frequent pings.</li>
+    <li>Auto-reconnect uses exponential backoff between <code>Reconnect min</code> and <code>Reconnect max</code>.</li>
+    <li>For WSS behind corporate proxies, set <code>proxy</code>. For private PKI, prefer <code>ca</code> over disabling verification.</li>
+    <li>If your server requires a subprotocol, set <code>protocols</code> (e.g. <code>["jsonrpc"]</code>).</li>
+  </ul>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('dynamic-websocket-map', {
+        category: 'network',
+        color: '#C0DEED',
+        defaults: {
+            name: { value: '' },
+            pingInterval: { value: 30000 },
+            initialConnections: { value: '' },
+            reconnectMin: { value: 1000 },
+            reconnectMax: { value: 30000 },
+            timeoutMs: { value: 10000 }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'bridge-dash.svg',
+        label: function () { return this.name || 'dynamic-websocket-map'; }
+    });
+</script>

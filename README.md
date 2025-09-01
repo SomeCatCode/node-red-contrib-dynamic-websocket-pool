@@ -1,0 +1,1 @@
+# node-red-contrib-dynamic-websocket-pool

@@ -1,0 +1,255 @@
+[
+    {
+        "id": "09b0ecae65e594ff",
+        "type": "tab",
+        "label": "Dynamic Websockert Pool Example",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "fa8def1deba61b40",
+        "type": "inject",
+        "z": "09b0ecae65e594ff",
+        "name": "Add Websocket echo01",
+        "props": [
+            {
+                "p": "websocketId",
+                "v": "CMD",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"action\":\"create\",\"id\":\"echo01\",\"url\":\"ws://127.0.0.1:1880/ws\"}",
+        "payloadType": "json",
+        "x": 400,
+        "y": 140,
+        "wires": [
+            [
+                "5d69f3d8993e49ac"
+            ]
+        ]
+    },
+    {
+        "id": "277863357dd51173",
+        "type": "inject",
+        "z": "09b0ecae65e594ff",
+        "name": "List Websockets",
+        "props": [
+            {
+                "p": "websocketId",
+                "v": "CMD",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"action\":\"list\"}",
+        "payloadType": "json",
+        "x": 380,
+        "y": 220,
+        "wires": [
+            [
+                "5d69f3d8993e49ac"
+            ]
+        ]
+    },
+    {
+        "id": "a6fe33612f387c32",
+        "type": "debug",
+        "z": "09b0ecae65e594ff",
+        "name": "Websocket Out",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "23e7de0fac458926",
+        "type": "inject",
+        "z": "09b0ecae65e594ff",
+        "name": "Delete echo02",
+        "props": [
+            {
+                "p": "websocketId",
+                "v": "CMD",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"action\":\"delete\",\"id\":\"echo02\"}",
+        "payloadType": "json",
+        "x": 370,
+        "y": 260,
+        "wires": [
+            [
+                "5d69f3d8993e49ac"
+            ]
+        ]
+    },
+    {
+        "id": "67511ae6f40e6847",
+        "type": "inject",
+        "z": "09b0ecae65e594ff",
+        "name": "Message echo01",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "websocketId",
+                "v": "echo01",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"some\":\"payload on echo01\"}",
+        "payloadType": "json",
+        "x": 380,
+        "y": 320,
+        "wires": [
+            [
+                "5d69f3d8993e49ac"
+            ]
+        ]
+    },
+    {
+        "id": "5d69f3d8993e49ac",
+        "type": "dynamic-websocket-pool",
+        "z": "09b0ecae65e594ff",
+        "name": "",
+        "pingInterval": 30000,
+        "initialConnections": "",
+        "reconnectMin": 1000,
+        "reconnectMax": 30000,
+        "timeoutMs": 10000,
+        "x": 710,
+        "y": 200,
+        "wires": [
+            [
+                "a6fe33612f387c32"
+            ]
+        ]
+    },
+    {
+        "id": "10474349c094c29b",
+        "type": "websocket in",
+        "z": "09b0ecae65e594ff",
+        "name": "",
+        "server": "8c75219037fd2b7e",
+        "client": "",
+        "x": 630,
+        "y": 120,
+        "wires": [
+            [
+                "bae98806b1ae102c"
+            ]
+        ]
+    },
+    {
+        "id": "bae98806b1ae102c",
+        "type": "websocket out",
+        "z": "09b0ecae65e594ff",
+        "name": "",
+        "server": "8c75219037fd2b7e",
+        "client": "",
+        "x": 800,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "c4c181779b2eb9ef",
+        "type": "inject",
+        "z": "09b0ecae65e594ff",
+        "name": "Add Websocket echo02",
+        "props": [
+            {
+                "p": "websocketId",
+                "v": "CMD",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"action\":\"create\",\"id\":\"echo02\",\"url\":\"ws://127.0.0.1:1880/ws\"}",
+        "payloadType": "json",
+        "x": 400,
+        "y": 180,
+        "wires": [
+            [
+                "5d69f3d8993e49ac"
+            ]
+        ]
+    },
+    {
+        "id": "8c75219037fd2b7e",
+        "type": "websocket-listener",
+        "path": "/ws",
+        "wholemsg": "true"
+    },
+    {
+        "id": "d9dc8260b29d749f",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "red-contrib-dynamic-websocket-pool": "1.0.0"
+        }
+    }
+]

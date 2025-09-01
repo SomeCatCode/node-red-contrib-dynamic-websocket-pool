@@ -1,0 +1,36 @@
+{
+  "name": "red-contrib-dynamic-websocket-pool",
+  "version": "1.0.0",
+  "description": "A Node-RED node to manage a pool of WebSocket connections with keepalive, auto-reconnect, Basic Auth, and per-id routing.",
+  "keywords": [
+    "node-red",
+    "websocket",
+    "wss",
+    "basic-auth",
+    "reconnect",
+    "dynamic"
+  ],
+  "node-red": {
+    "version": ">=3.0.0",
+    "nodes": {
+      "dynamic-websocket": "dynamic-websocket-pool.js"
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "homepage": "https://github.com/SomeCatCode/node-red-contrib-dynamic-websocket-pool#readme",
+  "bugs": {
+    "url": "https://github.com/SomeCatCode/node-red-contrib-dynamic-websocket-pool/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SomeCatCode/node-red-contrib-dynamic-websocket-pool.git"
+  },
+  "license": "MIT",
+  "author": "SomeCatCode",
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
